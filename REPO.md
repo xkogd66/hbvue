@@ -64,12 +64,30 @@ npm run lint       # lint with eslint
 
 ## Deployment
 
-- **GitHub Actions:** `.github/workflows/build-push.yml` — triggers on push to `main`, builds and pushes to Docker Hub as `lucarv/365vue:latest`
-- **Kubernetes:** `kustomize/full.yaml` — Service (LoadBalancer on port 80) + Deployment, namespace `webapps`, image `lucarv/365vue:latest`
+- **GitHub Actions:** `.github/workflows/build-deploy.yml` — triggers on push to `main`, builds and pushes to **GHCR** (`ghcr.io/xkogd66/hbvue:latest` + `:<sha>`), then rolls out to Kubernetes.
+- **Kubernetes:** `kustomize/full.yaml` — Service (LoadBalancer on port 80) + Deployment (`hbvue`, container `hbvue`), namespace `webapps`, image `ghcr.io/xkogd66/hbvue:latest`.
+  - Deployment uses `kubectl set image ... :${{ github.sha }}` (immutable per-commit tag) then `kubectl rollout status`.
+  - Required repo secret: `KUBE_CONFIG_DATA` (base64-encoded kubeconfig).
 
-## ⚠️ Security
+## Security
 
-The GitHub workflow contains a **hardcoded Docker Hub password** in plain text (`lucaPWD4d0ck34`). Consider using GitHub Actions secrets instead.
+Registry auth uses the built-in `GITHUB_TOKEN` (`secrets.GITHUB_TOKEN`) via `docker/login-action` — no hardcoded credentials. Kubernetes access uses the `KUBE_CONFIG_DATA` repo secret.
+
+## PWA
+
+The app is a Progressive Web App via `@vue/cli-plugin-pwa` (Workbox `GenerateSW`).
+
+| Piece | Where |
+|---|---|
+| Config (`manifestOptions`, `workboxOptions`, runtime caching) | `vue.config.js` (`pwa` block) |
+| Service-worker registration | `src/registerServiceWorker.js` (imported from `src/main.js`) |
+| Icons | `public/img/icons/` (192/512 + maskable, apple-touch, favicons) |
+| Generated at build | `dist/manifest.json`, `dist/service-worker.js` |
+
+- **Manifest:** name/short name `EKSKOG 365`, `display: standalone`, theme `#111827`.
+- **Runtime caching:** app shell `NetworkFirst`; `objects.hbvu.su/blotpix/*` photos `CacheFirst` (30 days, 500 entries); cdnjs assets `StaleWhileRevalidate`.
+- Registration only runs in production (`NODE_ENV === 'production'`).
+- Icons were generated from `src/assets/logo.png` with `sips` (macOS).
 
 ## Path alias
 

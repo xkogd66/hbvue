@@ -29,6 +29,6 @@ spec:
     spec:
       containers:
       - name: hbvue
-        image: lucarv/365vue:latest
+        image: ghcr.io/xkogd66/hbvue:latest
         ports:
         - containerPort: 80

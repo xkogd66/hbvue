@@ -1,5 +1,7 @@
 # hbvue-pix
 
+Vue 3 PWA photo gallery (EKSKOG 365). Images and deploys: see [`REPO.md`](./REPO.md).
+
 ## Project setup
 ```
 npm install

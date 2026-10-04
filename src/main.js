@@ -5,6 +5,7 @@ import LandingPage from './components/LandingPage.vue';
 import DayAcrossYears from './components/DayAcrossYears.vue';
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@/assets/tailwind.css'
+import './registerServiceWorker'
 
 const routes = [
     { path: '/', name: 'Home', component: LandingPage },
