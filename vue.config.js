@@ -8,6 +8,10 @@ module.exports = {
     backgroundColor: '#111827',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
+    iconPaths: {
+      // Point apple-touch-icon at the full 180x180 render (plugin default is 152).
+      appleTouchIcon: 'img/icons/apple-touch-icon.png',
+    },
     manifestOptions: {
       name: 'EKSKOG 365',
       short_name: 'EKSKOG 365',
