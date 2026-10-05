@@ -81,13 +81,18 @@ The app is a Progressive Web App via `@vue/cli-plugin-pwa` (Workbox `GenerateSW`
 |---|---|
 | Config (`manifestOptions`, `workboxOptions`, runtime caching) | `vue.config.js` (`pwa` block) |
 | Service-worker registration | `src/registerServiceWorker.js` (imported from `src/main.js`) |
-| Icons | `public/img/icons/` (192/512 + maskable, apple-touch, favicons) |
+| Icons | `public/img/icons/` (vector `icon.svg` + rendered 192/512, maskable, apple-touch, favicons) |
 | Generated at build | `dist/manifest.json`, `dist/service-worker.js` |
 
 - **Manifest:** name/short name `EKSKOG 365`, `display: standalone`, theme `#111827`.
 - **Runtime caching:** app shell `NetworkFirst`; `objects.hbvu.su/blotpix/*` photos `CacheFirst` (30 days, 500 entries); cdnjs assets `StaleWhileRevalidate`.
 - Registration only runs in production (`NODE_ENV === 'production'`).
-- Icons were generated from `src/assets/logo.png` with `sips` (macOS).
+- **Icon source of truth:** `public/img/icons/icon.svg` (vector). All raster icons
+  plus `public/favicon.ico` are rendered from it by
+  `scripts/generate-icons.js` (`node scripts/generate-icons.js`, needs
+  `npm i -D sharp to-ico`). This replaced the old blurred icons that were upscaled
+  from the 25x25 `src/assets/logo.png`. Edit `icon.svg`, re-run the script, and
+  the PNGs/ICO regenerate deterministically.
 
 ## Path alias
 
